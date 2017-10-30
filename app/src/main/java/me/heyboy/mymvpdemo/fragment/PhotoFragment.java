@@ -11,11 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.io.IOException;
 import java.util.List;
 
 import me.heyboy.mymvpdemo.PhotoContract;
 import me.heyboy.mymvpdemo.R;
 import me.heyboy.mymvpdemo.model.entities.ImgRecorder;
+import me.heyboy.mymvpdemo.services.PhotoImgService;
 
 
 public class PhotoFragment extends Fragment implements PhotoContract.View {
@@ -130,7 +132,12 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
 
         @Override
         protected List<ImgRecorder> doInBackground(Void... voids) {
-            return null;
+            try {
+                return PhotoImgService.getImgRecorders();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
 
         @Override

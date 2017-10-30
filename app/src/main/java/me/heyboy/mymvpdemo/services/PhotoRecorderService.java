@@ -18,4 +18,8 @@ import retrofit2.http.Query;
 public interface PhotoRecorderService {
     @GET("meinv")
     Call<ResponseBody> getImages(@Query("key") String key, @Query("num") int num);
+
+    @GET("meinv/?key=8cac56725686f0638e903188f187858b&num=10")
+    Call<ResponseBody> getImagesDefault();
+
 }
