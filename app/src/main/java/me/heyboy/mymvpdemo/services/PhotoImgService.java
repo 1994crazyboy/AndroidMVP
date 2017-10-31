@@ -39,7 +39,7 @@ public class PhotoImgService {
                 .baseUrl(URL)
                 .build();
         PhotoRecorderService photoRecorderService = retrofit.create(PhotoRecorderService.class);
-        Call<ResponseBody> call = photoRecorderService.getImages(API_KEY, 10);
+        Call<ResponseBody> call = photoRecorderService.getImages(API_KEY, 50);
         //Call<ResponseBody> call = photoRecorderService.getImagesDefault();
         //call.enqueue(new Callback<ResponseBody>(){
         //    @Override

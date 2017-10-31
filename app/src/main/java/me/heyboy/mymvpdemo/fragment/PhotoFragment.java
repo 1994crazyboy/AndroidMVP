@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import me.heyboy.mymvpdemo.PhotoContract;
@@ -21,10 +23,11 @@ import me.heyboy.mymvpdemo.services.PhotoImgService;
 
 
 public class PhotoFragment extends Fragment implements PhotoContract.View {
+    private final static String TAG = "PhotoFragment";
 
     private PhotoContract.Presenter mPhotoPresenter;
     private RecyclerView mRecyclerView;
-    private List<ImgRecorder> mImgRecorderList;
+    private List<ImgRecorder> mImgRecorderList=new ArrayList<>();
 
     public PhotoFragment() {
     }
@@ -36,29 +39,42 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //创建的时候执行下载任务
-        mImgRecorderList=mPhotoPresenter.fetchRecorders();
+        //mImgRecorderList = mPhotoPresenter.fetchRecorders();
         super.onCreate(savedInstanceState);
+
+
+        //执行请求参数
+        new FetchPhotoItems().execute();
+        if (mImgRecorderList != null) {
+            Log.i(TAG, "Items要获取完毕了：" + mImgRecorderList.size());
+        } else {
+            Log.e(TAG, "Items获取报错了！");
+        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_photo, container, false);
-        mRecyclerView=view.findViewById(R.id.fragment_photo_gallery);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_photo, container, false);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_photo_gallery);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
 
-        if(isAdded()){
-            PhotoAdapter adapter=new PhotoAdapter(mImgRecorderList);
-            mRecyclerView.setAdapter(adapter);
-        }
+        setAdapter();
 
         return view;
+    }
+
+    private void setAdapter() {
+        if (isAdded()) {
+            PhotoAdapter adapter = new PhotoAdapter(mImgRecorderList);
+            mRecyclerView.setAdapter(adapter);
+        }
     }
 
 
     @Override
     public void setPresenter(PhotoContract.Presenter presenter) {
-        mPhotoPresenter= presenter;
+        mPhotoPresenter = presenter;
     }
 
     /**
@@ -81,16 +97,16 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
     /**
      * RecyclerView 的 ViewHolder
      */
-    private class PhotoHolder extends RecyclerView.ViewHolder{
+    private class PhotoHolder extends RecyclerView.ViewHolder {
         private ImageView mImageView;
 
         public PhotoHolder(View itemView) {
             super(itemView);
-            mImageView=itemView.findViewById(R.id.fragment_photo_gallery);
+            mImageView = (ImageView) itemView.findViewById(R.id.imgview_photo_grallery);
         }
 
         //绑定设置图片
-        public void bindDrawble(Drawable drawable){
+        public void bindDrawble(Drawable drawable) {
             mImageView.setImageDrawable(drawable);
         }
     }
@@ -99,7 +115,7 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
     /**
      * RecyclerView 的 Adapter
      */
-    private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder>{
+    private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder> {
         private List<ImgRecorder> mImgRecorderList;
 
         //构造函数构造ImgRecorderList
@@ -109,15 +125,15 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
 
         @Override
         public PhotoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater=getActivity().getLayoutInflater();
-            View view=layoutInflater.inflate(R.layout.photo_grallery,parent,false);
+            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+            View view = layoutInflater.inflate(R.layout.photo_grallery, parent, false);
             return new PhotoHolder(view);
         }
 
         @Override
         public void onBindViewHolder(PhotoHolder holder, int position) {
-            ImgRecorder imgRecorder=mImgRecorderList.get(position);
-            Drawable drawable=getResources().getDrawable(R.drawable.boduo);
+            ImgRecorder imgRecorder = mImgRecorderList.get(position);
+            Drawable drawable = getResources().getDrawable(R.drawable.boduo);
             holder.bindDrawble(drawable);
         }
 
@@ -128,12 +144,14 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
     }
 
 
-    private class FetchPhotoItems extends AsyncTask<Void,Void,List<ImgRecorder>>{
+    private class FetchPhotoItems extends AsyncTask<Void, Void, List<ImgRecorder>> {
 
         @Override
         protected List<ImgRecorder> doInBackground(Void... voids) {
             try {
-                return PhotoImgService.getImgRecorders();
+                List<ImgRecorder> imgRecorderList = PhotoImgService.getImgRecorders();
+                Log.i(TAG, "运行到FetchPhotoItems类中。获取记录的长度为：" + imgRecorderList.size());
+                return imgRecorderList;
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -141,8 +159,11 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
         }
 
         @Override
-        protected void onPostExecute(List<ImgRecorder> items){
-            mImgRecorderList=items;
+        protected void onPostExecute(List<ImgRecorder> items) {
+            super.onPostExecute(items);
+            mImgRecorderList = items;
+            Log.i(TAG," 88888 onPostExecute mImgRecorderList size"+mImgRecorderList.size());
+            setAdapter();
         }
 
     }
