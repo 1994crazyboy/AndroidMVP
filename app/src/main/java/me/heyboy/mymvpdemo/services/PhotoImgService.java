@@ -40,18 +40,6 @@ public class PhotoImgService {
                 .build();
         PhotoRecorderService photoRecorderService = retrofit.create(PhotoRecorderService.class);
         Call<ResponseBody> call = photoRecorderService.getImages(API_KEY, 50);
-        //Call<ResponseBody> call = photoRecorderService.getImagesDefault();
-        //call.enqueue(new Callback<ResponseBody>(){
-        //    @Override
-        //    public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-        //        System.out.println(response.body().toString());
-        //    }
-        //    @Override
-        //    public void onFailure(Call<ResponseBody> call, Throwable t) {
-        //        System.out.println("错误！");
-        //        t.printStackTrace();
-        //    }
-        //});
 
         ResponseBody responseBody = call.execute().body();
         String resultBody = responseBody.string();

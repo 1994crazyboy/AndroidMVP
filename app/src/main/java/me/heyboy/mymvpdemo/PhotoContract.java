@@ -1,5 +1,6 @@
 package me.heyboy.mymvpdemo;
 
+import java.io.IOException;
 import java.util.List;
 
 import me.heyboy.mymvpdemo.model.entities.ImgRecorder;
@@ -23,20 +24,22 @@ public interface PhotoContract {
          * 显示美女图片
          */
         void showImg();
+
+        void setAdapter(List<ImgRecorder> imgRecorders);
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter<T> extends BasePresenter {
         /**
          * 下载图片
          */
-        void download();
+        void download(T target,String url);
 
 
         /**
          * 获取所有的记录
          * @return
          */
-        List<ImgRecorder> fetchRecorders();
+        List<ImgRecorder> fetchRecorders() throws IOException;
 
 
     }

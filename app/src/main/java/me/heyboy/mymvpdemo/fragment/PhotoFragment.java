@@ -25,7 +25,7 @@ import me.heyboy.mymvpdemo.services.PhotoImgService;
 public class PhotoFragment extends Fragment implements PhotoContract.View {
     private final static String TAG = "PhotoFragment";
 
-    private PhotoContract.Presenter mPhotoPresenter;
+    private PhotoContract.Presenter<PhotoHolder> mPhotoPresenter;
     private RecyclerView mRecyclerView;
     private List<ImgRecorder> mImgRecorderList=new ArrayList<>();
 
@@ -38,18 +38,15 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        //创建的时候执行下载任务
-        //mImgRecorderList = mPhotoPresenter.fetchRecorders();
         super.onCreate(savedInstanceState);
 
+        try {
+            mImgRecorderList=mPhotoPresenter.fetchRecorders();
 
-        //执行请求参数
-        new FetchPhotoItems().execute();
-        if (mImgRecorderList != null) {
-            Log.i(TAG, "Items要获取完毕了：" + mImgRecorderList.size());
-        } else {
-            Log.e(TAG, "Items获取报错了！");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override
@@ -59,14 +56,15 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
 
-        setAdapter();
+        setAdapter(mImgRecorderList);
 
         return view;
     }
 
-    private void setAdapter() {
+    @Override
+    public void setAdapter(List<ImgRecorder> imgRecorders) {
         if (isAdded()) {
-            PhotoAdapter adapter = new PhotoAdapter(mImgRecorderList);
+            PhotoAdapter adapter = new PhotoAdapter(imgRecorders);
             mRecyclerView.setAdapter(adapter);
         }
     }
@@ -135,6 +133,8 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
             ImgRecorder imgRecorder = mImgRecorderList.get(position);
             Drawable drawable = getResources().getDrawable(R.drawable.boduo);
             holder.bindDrawble(drawable);
+
+            mPhotoPresenter.download(holder,imgRecorder.getUrl());
         }
 
         @Override
@@ -163,7 +163,7 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
             super.onPostExecute(items);
             mImgRecorderList = items;
             Log.i(TAG," 88888 onPostExecute mImgRecorderList size"+mImgRecorderList.size());
-            setAdapter();
+            setAdapter(mImgRecorderList);
         }
 
     }
