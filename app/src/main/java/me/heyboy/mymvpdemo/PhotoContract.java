@@ -1,5 +1,8 @@
 package me.heyboy.mymvpdemo;
 
+import android.content.Context;
+import android.content.res.Resources;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -28,11 +31,11 @@ public interface PhotoContract {
         void setAdapter(List<ImgRecorder> imgRecorders);
     }
 
-    interface Presenter<T> extends BasePresenter {
+    interface Presenter extends BasePresenter {
         /**
          * 下载图片
          */
-        void download(T target,String url);
+        void download(Object target,String url);
 
 
         /**
@@ -40,6 +43,8 @@ public interface PhotoContract {
          * @return
          */
         List<ImgRecorder> fetchRecorders() throws IOException;
+
+        void setReources(Resources resources);
 
 
     }

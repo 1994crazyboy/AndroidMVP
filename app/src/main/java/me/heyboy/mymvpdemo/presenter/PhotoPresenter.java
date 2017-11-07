@@ -1,5 +1,12 @@
 package me.heyboy.mymvpdemo.presenter;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
@@ -21,8 +28,10 @@ import io.reactivex.schedulers.Schedulers;
 import me.heyboy.mymvpdemo.PhotoContract;
 import me.heyboy.mymvpdemo.constant.APIConstant;
 import me.heyboy.mymvpdemo.dao.ImgRecorderDao;
+import me.heyboy.mymvpdemo.fragment.PhotoFragment;
 import me.heyboy.mymvpdemo.model.entities.ImgRecorder;
 import me.heyboy.mymvpdemo.model.entities.ImgRecorder2;
+import me.heyboy.mymvpdemo.services.PhotoDownloadHandler;
 import me.heyboy.mymvpdemo.services.PhotoRecorderService;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -47,6 +56,9 @@ public class PhotoPresenter implements PhotoContract.Presenter {
     private final ImgRecorderDao mImgRecorderDao;
     private static List<ImgRecorder> items = new ArrayList<>();
 
+    private Resources mResources;
+    private PhotoDownloadHandler<PhotoFragment.PhotoHolder> mPhotoDownloadHandler;
+
     /**
      * 在构造函数中设置这两个变量
      *
@@ -54,6 +66,7 @@ public class PhotoPresenter implements PhotoContract.Presenter {
      * @param imgRecorderDao
      */
     public PhotoPresenter(PhotoContract.View photoView, ImgRecorderDao imgRecorderDao) {
+        super();
         mPhotoView = photoView;
         mImgRecorderDao = imgRecorderDao;
 
@@ -67,13 +80,46 @@ public class PhotoPresenter implements PhotoContract.Presenter {
     }
 
 
+
+    //这里调取PhotoDownloadHandler的方法
     @Override
     public void download(Object target, String url) {
+        Log.i(TAG,"正在下载美女："+url);
+        mPhotoDownloadHandler.downloader((PhotoFragment.PhotoHolder) target,url);
+    }
+
+
+    //执行下载图片
+    public static byte[] downloadImg(String url) throws IOException {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(URL)
+                .build();
+        PhotoRecorderService photoRecorderService = retrofit.create(PhotoRecorderService.class);
+        if(url==null){
+            return null;
+        }
+        Call<ResponseBody> call = photoRecorderService.downloadImge(url);
+
+        byte[] bytes = call.execute().body().bytes();
+        return bytes;
 
     }
 
     @Override
     public List<ImgRecorder> fetchRecorders() throws IOException {
+
+        Handler handler = new Handler();
+        mPhotoDownloadHandler = new PhotoDownloadHandler<>(handler);
+        mPhotoDownloadHandler.setDownloadListener(new PhotoDownloadHandler.PhotoDownloadListener<PhotoFragment.PhotoHolder>() {
+            @Override
+            public void photoDownloaded(PhotoFragment.PhotoHolder target, Bitmap bitmap) {
+                Drawable drawable = new BitmapDrawable(mResources, bitmap);
+                target.bindDrawble(drawable);
+            }
+        });
+
+        mPhotoDownloadHandler.start();
+        mPhotoDownloadHandler.getLooper();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
@@ -108,5 +154,10 @@ public class PhotoPresenter implements PhotoContract.Presenter {
                     }
                 });
         return items;
+    }
+
+    @Override
+    public void setReources(Resources resources) {
+        mResources=resources;
     }
 }

@@ -30,4 +30,7 @@ public interface PhotoRecorderService {
     @GET
     Observable<ResponseBody> downloadObserv(@Url String url);
 
+    @GET
+    Call<ResponseBody> downloadImge(@Url String url);
+
 }

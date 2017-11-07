@@ -1,5 +1,6 @@
 package me.heyboy.mymvpdemo.fragment;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,7 +26,7 @@ import me.heyboy.mymvpdemo.services.PhotoImgService;
 public class PhotoFragment extends Fragment implements PhotoContract.View {
     private final static String TAG = "PhotoFragment";
 
-    private PhotoContract.Presenter<PhotoHolder> mPhotoPresenter;
+    private PhotoContract.Presenter mPhotoPresenter;
     private RecyclerView mRecyclerView;
     private List<ImgRecorder> mImgRecorderList=new ArrayList<>();
 
@@ -39,6 +40,7 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPhotoPresenter.setReources(getResources());
 
         try {
             mImgRecorderList=mPhotoPresenter.fetchRecorders();
@@ -95,7 +97,7 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
     /**
      * RecyclerView 的 ViewHolder
      */
-    private class PhotoHolder extends RecyclerView.ViewHolder {
+    public class PhotoHolder extends RecyclerView.ViewHolder {
         private ImageView mImageView;
 
         public PhotoHolder(View itemView) {
@@ -134,7 +136,7 @@ public class PhotoFragment extends Fragment implements PhotoContract.View {
             Drawable drawable = getResources().getDrawable(R.drawable.boduo);
             holder.bindDrawble(drawable);
 
-            mPhotoPresenter.download(holder,imgRecorder.getUrl());
+            mPhotoPresenter.download(holder,imgRecorder.getPicUrl());
         }
 
         @Override

@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         DemoDbHelper.openDb(this);
         ImgRecorderDao imgRecorderDao=DemoDbHelper.getmDaoSession().getImgRecorderDao();
 
+        //mPhotoPresenter.setContext(this);
 
         //设置Presenter
         mPhotoPresenter=new PhotoPresenter(photoFragment,imgRecorderDao);
