@@ -1,34 +1,26 @@
-package me.heyboy.mymvpdemo.presenter;
+package me.heyboy.mymvpdemo.photo;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
+import javax.inject.Inject;
+
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import me.heyboy.mymvpdemo.PhotoContract;
-import me.heyboy.mymvpdemo.constant.APIConstant;
-import me.heyboy.mymvpdemo.dao.ImgRecorderDao;
-import me.heyboy.mymvpdemo.fragment.PhotoFragment;
+import me.heyboy.mymvpdemo.model.dao.ImgRecorderDao;
 import me.heyboy.mymvpdemo.model.entities.ImgRecorder;
 import me.heyboy.mymvpdemo.model.entities.ImgRecorder2;
 import me.heyboy.mymvpdemo.services.PhotoDownloadHandler;
@@ -65,6 +57,7 @@ public class PhotoPresenter implements PhotoContract.Presenter {
      * @param photoView
      * @param imgRecorderDao
      */
+    @Inject
     public PhotoPresenter(PhotoContract.View photoView, ImgRecorderDao imgRecorderDao) {
         super();
         mPhotoView = photoView;

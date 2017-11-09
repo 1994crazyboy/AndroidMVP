@@ -1,17 +1,21 @@
-package me.heyboy.mymvpdemo;
+package me.heyboy.mymvpdemo.photo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import me.heyboy.mymvpdemo.dao.ImgRecorderDao;
-import me.heyboy.mymvpdemo.data.DemoDbHelper;
-import me.heyboy.mymvpdemo.fragment.PhotoFragment;
-import me.heyboy.mymvpdemo.presenter.PhotoPresenter;
+import javax.inject.Inject;
+
+import me.heyboy.mymvpdemo.DaggerAppComponent;
+import me.heyboy.mymvpdemo.R;
+import me.heyboy.mymvpdemo.model.dao.ImgRecorderDao;
+import me.heyboy.mymvpdemo.model.data.DemoDbHelper;
 import me.heyboy.mymvpdemo.util.ActivityUtils;
 
 public class MainActivity extends AppCompatActivity {
-    private PhotoPresenter mPhotoPresenter;
+
+    @Inject
+    public PhotoPresenter mPhotoPresenter;
 
 
     @Override
@@ -31,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         DemoDbHelper.openDb(this);
         ImgRecorderDao imgRecorderDao=DemoDbHelper.getmDaoSession().getImgRecorderDao();
 
-        //mPhotoPresenter.setContext(this);
 
         //设置Presenter
         mPhotoPresenter=new PhotoPresenter(photoFragment,imgRecorderDao);

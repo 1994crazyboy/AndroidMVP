@@ -1,5 +1,8 @@
 package me.heyboy.mymvpdemo.model.entities;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +12,7 @@ import java.util.List;
  * 工程名称： MyApplication
  * 包   名： me.heyboy.mymvpdemo.model.entities
  */
-
+@Entity
 public class ImgRecorder2 {
 
     /**
@@ -17,7 +20,8 @@ public class ImgRecorder2 {
      * msg : success
      * newslist : [{"ctime":"2016-03-06 14:11","title":"性感黛欣霓内衣写真","description":"美女图片","picUrl":"http://m.xxxiao.com/wp-content/uploads/sites/3/2015/04/m.xxxiao.com_4e1ed310e8b3553d266bd619949ec01c3-760x500.jpg","url":"http://m.xxxiao.com/435"}]
      */
-
+    @Id(autoincrement = true)
+    private Long id;
     private int code;
     private String msg;
     private List<NewslistBean> newslist;
@@ -51,7 +55,7 @@ public class ImgRecorder2 {
 
         List<NewslistBean> newslistBeanList = imgRecorder2.getNewslist();
         for (NewslistBean newslistBean : newslistBeanList) {
-            ImgRecorder imgRecorder=new ImgRecorder();
+            ImgRecorder imgRecorder = new ImgRecorder();
             imgRecorder.setDescription(newslistBean.getDescription());
             imgRecorder.setTitle(newslistBean.getTitle());
             //imgRecorder.setCtime(newslistBean.getCtime());

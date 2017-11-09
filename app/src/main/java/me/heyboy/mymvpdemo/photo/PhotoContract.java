@@ -1,4 +1,4 @@
-package me.heyboy.mymvpdemo;
+package me.heyboy.mymvpdemo.photo;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import java.io.IOException;
 import java.util.List;
 
+import me.heyboy.mymvpdemo.BasePresenter;
+import me.heyboy.mymvpdemo.BaseView;
 import me.heyboy.mymvpdemo.model.entities.ImgRecorder;
 
 /**

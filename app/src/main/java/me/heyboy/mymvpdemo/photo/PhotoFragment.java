@@ -1,6 +1,5 @@
-package me.heyboy.mymvpdemo.fragment;
+package me.heyboy.mymvpdemo.photo;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.heyboy.mymvpdemo.PhotoContract;
 import me.heyboy.mymvpdemo.R;
 import me.heyboy.mymvpdemo.model.entities.ImgRecorder;
 import me.heyboy.mymvpdemo.services.PhotoImgService;

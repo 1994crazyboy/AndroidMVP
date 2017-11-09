@@ -1,4 +1,4 @@
-package me.heyboy.mymvpdemo.data;
+package me.heyboy.mymvpdemo.model.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
  * 创 建 人： Henning
  * 创建时间： 17-10-25 下午9:53
  * 工程名称： MyApplication
- * 包   名： me.heyboy.mymvpdemo.data
+ * 包   名： me.heyboy.mymvpdemo.model.data
  */
 
 public class DemoDbHelper {
